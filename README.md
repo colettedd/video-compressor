@@ -1,6 +1,6 @@
-!!!VIBECODED!!!
+# !!!VIBECODED!!!
 
-# Discord Video Compressor
+# Video Compressor
 
 A PowerShell script that compresses a video to fit under a target file size
 (10 MB by default, matching Discord's free upload limit) using ffmpeg
