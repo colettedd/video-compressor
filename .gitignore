@@ -1,0 +1,11 @@
+# ffmpeg two-pass log files (created next to whichever folder you run the script from)
+ffmpeg2pass-0.log
+ffmpeg2pass-0.log.mbtree
+
+# Don't accidentally commit test videos or output
+*.mp4
+*.mov
+*.mkv
+*.avi
+*.webm
+*(Reencoded)*
