@@ -8,5 +8,5 @@ if "%~1"=="" (
     exit /b 1
 )
 
-powershell -NoProfile -ExecutionPolicy Bypass -File "%~dp0compress_for_discord.ps1" -InputFile "%~1" -TargetMB 10
+powershell -NoProfile -ExecutionPolicy Bypass -File "%~dp0compressor.ps1" -InputFile "%~1" -TargetMB 10
 pause

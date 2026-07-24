@@ -35,13 +35,13 @@ saves the result next to the original file.
 
 ```powershell
 # Default: 10 MB, saves as "video (Reencoded).mp4" next to the original
-.\compress_for_discord.ps1 -InputFile "video.mp4"
+.\compressor.ps1 -InputFile "video.mp4"
 
 # Custom size limit
-.\compress_for_discord.ps1 -InputFile "video.mp4" -TargetMB 50
+.\compressor.ps1 -InputFile "video.mp4" -TargetMB 50
 
 # Custom output path
-.\compress_for_discord.ps1 -InputFile "video.mp4" -OutputFile "result.mp4" -TargetMB 10
+.\compressor.ps1 -InputFile "video.mp4" -OutputFile "result.mp4" -TargetMB 10
 ```
 
 If PowerShell blocks the script from running, allow it for the current
