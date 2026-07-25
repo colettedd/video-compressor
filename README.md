@@ -13,7 +13,9 @@ two-pass encoding.
   slightly over the limit — output is guaranteed to fit
 - Automatically downscales resolution (e.g. 1080p → 720p) when the bitrate
   budget is too low for the original resolution, to avoid a blocky mess
-- Drag-and-drop support via the included `.bat` wrapper
+- Drag-and-drop support via the included `.bat` wrapper, which prompts for
+  target size and (optionally) frame rate
+- Optional frame rate cap (e.g. force 30 fps) via `-FPS`
 - Saves next to the original file by default, with `(Reencoded)` added to
   the filename
 
@@ -28,8 +30,9 @@ two-pass encoding.
 
 ### Option 1: Drag and drop (easiest)
 
-Drag a video file onto `Drop video here.bat`. It compresses to 10 MB and
-saves the result next to the original file.
+Drag a video file onto `Drop video here.bat`. It will ask for a target
+size (press Enter for the 10 MB default) and a frame rate (press Enter to
+keep the original), then save the result next to the original file.
 
 ### Option 2: PowerShell
 
@@ -42,6 +45,9 @@ saves the result next to the original file.
 
 # Custom output path
 .\compressor.ps1 -InputFile "video.mp4" -OutputFile "result.mp4" -TargetMB 10
+
+# Cap the frame rate (e.g. force 30 fps)
+.\compressor.ps1 -InputFile "video.mp4" -TargetMB 10 -FPS 30
 ```
 
 If PowerShell blocks the script from running, allow it for the current

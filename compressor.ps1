@@ -1,9 +1,11 @@
 ﻿# compress_for_discord.ps1
 # Szhimaet video do zadannogo razmera (po umolchaniyu 10 MB) dlya otpravki v Discord
 # Ispolzovanie:
-#   .\compress_for_discord.ps1 -InputFile "video.mp4"
+#   .\compressor.ps1 -InputFile "video.mp4"
 #     -> saves as "video (Reencoded).mp4" in the same folder
-#   .\compress_for_discord.ps1 -InputFile "video.mp4" -OutputFile "result.mp4" -TargetMB 10
+#   .\compressor.ps1 -InputFile "video.mp4" -OutputFile "result.mp4" -TargetMB 10
+#   .\compressor.ps1 -InputFile "video.mp4" -TargetMB 10 -FPS 30
+#     -> also caps the frame rate at 30 fps (omit -FPS to keep original)
 
 param(
     [Parameter(Mandatory=$true, Position=0)]
@@ -11,7 +13,9 @@ param(
 
     [string]$OutputFile,
 
-    [double]$TargetMB = 10
+    [double]$TargetMB = 10,
+
+    [double]$FPS = 0
 )
 
 # Strip stray surrounding quotes in case they ended up in the path
@@ -113,6 +117,13 @@ if ($targetHeight -gt 0 -and $targetHeight -lt $origHeight) {
     $scaleFilter = "scale=-2:$targetHeight"
 }
 
+# Combine scale and fps into a single -vf filter chain if either is set
+$vfParts = @()
+if ($scaleFilter) { $vfParts += $scaleFilter }
+if ($FPS -gt 0) { $vfParts += "fps=$FPS" }
+$vfFilter = $null
+if ($vfParts.Count -gt 0) { $vfFilter = ($vfParts -join ",") }
+
 $targetBytes = $TargetMB * 1MB
 $maxAttempts = 3
 $attempt = 1
@@ -128,13 +139,16 @@ while ($attempt -le $maxAttempts -and -not $success) {
     if ($scaleFilter) {
         Write-Host "Downscaling to: $targetHeight p (source was ${origWidth}x${origHeight})"
     }
+    if ($FPS -gt 0) {
+        Write-Host "Frame rate: $FPS fps"
+    }
     Write-Host "==================================="
 
     $pass1Args = @("-y", "-i", "$InputFile", "-c:v", "libx264", "-b:v", "${videoBitrate}k", "-pass", "1", "-an", "-f", "mp4")
     $pass2Args = @("-y", "-i", "$InputFile", "-c:v", "libx264", "-b:v", "${videoBitrate}k", "-pass", "2", "-c:a", "aac", "-b:a", "${audioBitrate}k", "-movflags", "+faststart")
-    if ($scaleFilter) {
-        $pass1Args += @("-vf", $scaleFilter)
-        $pass2Args += @("-vf", $scaleFilter)
+    if ($vfFilter) {
+        $pass1Args += @("-vf", $vfFilter)
+        $pass2Args += @("-vf", $vfFilter)
     }
     $pass1Args += "NUL"
     $pass2Args += "$OutputFile"

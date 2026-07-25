@@ -1,6 +1,7 @@
 @echo off
-REM Drop a video file onto this .bat to compress it for Discord (default: 10 MB limit)
-REM Usage: just drag-and-drop a video file onto this .bat icon in Explorer
+REM Drop a video file onto this .bat to compress it
+REM Usage: just drag-and-drop a video file onto this .bat icon in Explorer,
+REM then type your target size (and optionally frame rate) when asked.
 
 if "%~1"=="" (
     echo Drag and drop a video file onto this .bat file to compress it.
@@ -8,5 +9,14 @@ if "%~1"=="" (
     exit /b 1
 )
 
-powershell -NoProfile -ExecutionPolicy Bypass -File "%~dp0compressor.ps1" -InputFile "%~1" -TargetMB 10
+set /p TargetMB="Target size in MB (press Enter for 10): "
+if "%TargetMB%"=="" set TargetMB=10
+
+set /p FPS="Frame rate / FPS (press Enter to keep original): "
+
+if "%FPS%"=="" (
+    powershell -NoProfile -ExecutionPolicy Bypass -File "%~dp0compressor.ps1" -InputFile "%~1" -TargetMB %TargetMB%
+) else (
+    powershell -NoProfile -ExecutionPolicy Bypass -File "%~dp0compressor.ps1" -InputFile "%~1" -TargetMB %TargetMB% -FPS %FPS%
+)
 pause
